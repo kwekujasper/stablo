@@ -1,63 +1,64 @@
-import { getSettings } from "@/lib/sanity/client";
+import { getSettings } from "@/lib/wordpress/api";
 import Footer from "@/components/footer";
-import { urlForImage } from "@/lib/sanity/image";
 import Navbar from "@/components/navbar";
+import { WebSiteSchema, OrganizationSchema } from "@/components/seo/JsonLd";
+import AdSenseScript from "@/components/ads/AdSenseScript";
+import OneSignalInit from "@/components/push/OneSignalInit";
+import WebPushrInit from "@/components/push/WebPushrInit";
 
-async function sharedMetaData(params) {
+async function sharedMetaData() {
   const settings = await getSettings();
 
   return {
-    // enable this for resolving opengraph image
-    // metadataBase: new URL(settings.url),
     title: {
-      default:
-        settings?.title ||
-        "Stablo - Blog Template for Next.js & Sanity CMS",
-      template: "%s | Stablo"
+      default: settings?.title || "Blog",
+      template: `%s | ${settings?.title || "Blog"}`,
     },
-    description:
-      settings?.description ||
-      "Stablo - popular open-source next.js and sanity blog template",
-    keywords: ["Next.js", "Sanity", "Tailwind CSS"],
-    authors: [{ name: "Surjith" }],
-    canonical: settings?.url,
+    description: settings?.description || "",
+    keywords: [],
+    metadataBase: settings?.url ? new URL(settings.url) : undefined,
+    alternates: {
+      canonical: settings?.url,
+    },
     openGraph: {
-      images: [
-        {
-          url:
-            urlForImage(settings?.openGraphImage)?.src ||
-            "/img/opengraph.jpg",
-          width: 800,
-          height: 600
-        }
-      ]
+      siteName: settings?.title,
+      type: "website",
+      images: [{ url: "/img/opengraph.jpg", width: 1200, height: 630 }],
     },
     twitter: {
-      title: settings?.title || "Stablo Template",
-      card: "summary_large_image"
+      title: settings?.title || "Blog",
+      card: "summary_large_image" as const,
     },
     robots: {
       index: true,
-      follow: true
-    }
+      follow: true,
+    },
   };
 }
 
-export async function generateMetadata({ params }) {
-  return await sharedMetaData(params);
+export async function generateMetadata() {
+  return await sharedMetaData();
 }
 
-export default async function Layout({ children, params }) {
+export default async function Layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const settings = await getSettings();
+
   return (
     <>
+      <AdSenseScript />
+      <OneSignalInit />
+      <WebPushrInit />
+      <WebSiteSchema settings={settings} />
+      <OrganizationSchema settings={settings} />
       <Navbar {...settings} />
-
       <div>{children}</div>
-
       <Footer {...settings} />
     </>
   );
 }
-// enable revalidate for all pages in this layout
-// export const revalidate = 60;
+
+export const revalidate = 3600;

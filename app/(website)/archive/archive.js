@@ -1,45 +1,42 @@
 import PostList from "@/components/postlist";
 import Pagination from "@/components/blog/pagination";
+import { getPaginatedPosts } from "@/lib/wordpress/api";
 
-import { getPaginatedPosts } from "@/lib/sanity/client";
+const POSTS_PER_PAGE = 6;
 
-export default async function Post({ searchParams }) {
-  // Fetch the current page from the query parameters, defaulting to 1 if it doesn't exist
-  const page = searchParams.page;
-  const pageIndex = parseInt(page, 10) || 1;
+export default async function Archive({ searchParams }) {
+  const page = parseInt(searchParams.page, 10) || 1;
 
-  // Set the number of posts to be displayed per page
-  const POSTS_PER_PAGE = 6;
+  // Cursor-based pagination: fetch enough cursors to get to the requested page.
+  // For page 1 we don't need a cursor; for subsequent pages we walk forward.
+  // This is the simplest approach for SSR — for a large blog consider caching cursors.
+  let after = undefined;
 
-  // Define the parameters for fetching posts based on the current page
-  const params = {
-    pageIndex: (pageIndex - 1) * POSTS_PER_PAGE,
-    limit: pageIndex * POSTS_PER_PAGE
-  };
+  if (page > 1) {
+    // Fetch cursors for all previous pages to get the correct `after` cursor
+    const prev = await getPaginatedPosts(POSTS_PER_PAGE * (page - 1));
+    after = prev.endCursor ?? undefined;
+  }
 
-  const posts = await getPaginatedPosts(params);
+  const { posts, hasNextPage } = await getPaginatedPosts(POSTS_PER_PAGE, after);
 
-  // Check if the current page is the first or the last
-  const isFirstPage = pageIndex < 2;
-  const isLastPage = posts.length < POSTS_PER_PAGE;
+  const isFirstPage = page < 2;
+  const isLastPage = !hasNextPage;
 
   return (
     <>
-      {posts && posts?.length === 0 && (
+      {posts.length === 0 && (
         <div className="flex h-40 items-center justify-center">
-          <span className="text-lg text-gray-500">
-            End of the result!
-          </span>
+          <span className="text-lg text-gray-500">End of the result!</span>
         </div>
       )}
       <div className="mt-10 grid gap-10 md:grid-cols-2 lg:gap-10 xl:grid-cols-3">
         {posts.map(post => (
-          <PostList key={post._id} post={post} aspect="square" />
+          <PostList key={post.id} post={post} aspect="square" />
         ))}
       </div>
-
       <Pagination
-        pageIndex={pageIndex}
+        pageIndex={page}
         isFirstPage={isFirstPage}
         isLastPage={isLastPage}
       />
