@@ -24,7 +24,7 @@ export default function OneSignalInit() {
             OneSignalDeferred.push(async function(OneSignal) {
               await OneSignal.init({
                 appId: "${appId}",
-                notifyButton: { enable: false },
+                notifyButton: { enable: false }, // using custom NotificationBell instead
                 promptOptions: {
                   slidedown: {
                     prompts: [{

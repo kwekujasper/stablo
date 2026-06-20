@@ -5,6 +5,12 @@ import { WebSiteSchema, OrganizationSchema } from "@/components/seo/JsonLd";
 import AdSenseScript from "@/components/ads/AdSenseScript";
 import OneSignalInit from "@/components/push/OneSignalInit";
 import WebPushrInit from "@/components/push/WebPushrInit";
+import NotificationBell from "@/components/push/NotificationBell";
+import dynamic from "next/dynamic";
+
+const PopupAd = dynamic(() => import("@/components/ads/PopupAd"), {
+  ssr: false,
+});
 
 async function sharedMetaData() {
   const settings = await getSettings();
@@ -46,6 +52,7 @@ export default async function Layout({
   children: React.ReactNode;
 }) {
   const settings = await getSettings();
+  const popupSlot = process.env.NEXT_PUBLIC_POPUP_AD_SLOT;
 
   return (
     <>
@@ -56,7 +63,11 @@ export default async function Layout({
       <OrganizationSchema settings={settings} />
       <Navbar {...settings} />
       <div>{children}</div>
-      <Footer {...settings} />
+      <Footer />
+      {/* Floating push notification bell (bottom-right) */}
+      <NotificationBell />
+      {/* Full-page interstitial ad — only mounted when slot is configured */}
+      {popupSlot && <PopupAd slot={popupSlot} />}
     </>
   );
 }
