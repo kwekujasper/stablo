@@ -243,13 +243,29 @@ export async function getAllAuthorsSlugs(): Promise<Array<{ author: string }>> {
 
 // ─── Site Settings ────────────────────────────────────────────────────────────
 
+function decodeHtmlEntities(str: string): string {
+  return str.replace(/&#(\d+);/g, (_, code) =>
+    String.fromCharCode(Number(code))
+  ).replace(/&amp;/g, "&")
+   .replace(/&lt;/g, "<")
+   .replace(/&gt;/g, ">")
+   .replace(/&quot;/g, '"')
+   .replace(/&#039;/g, "'")
+   .replace(/&apos;/g, "'");
+}
+
 export async function getSettings(): Promise<WPGeneralSettings> {
   try {
     const client = getClient(["settings"]);
     const data = await client.request<{
       generalSettings: WPGeneralSettings;
     }>(GET_GENERAL_SETTINGS);
-    return data.generalSettings;
+    const s = data.generalSettings;
+    return {
+      ...s,
+      title: s.title ? decodeHtmlEntities(s.title) : s.title,
+      description: s.description ? decodeHtmlEntities(s.description) : s.description,
+    };
   } catch (err) {
     console.error("[WP] getSettings failed:", err);
     return { title: "", description: "", url: "" };
