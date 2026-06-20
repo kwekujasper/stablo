@@ -110,6 +110,7 @@ export interface WPGeneralSettings {
   description: string;
   url: string;
   language?: string;
+  logoUrl?: string;
 }
 
 export interface WPMenuItem {

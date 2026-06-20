@@ -29,6 +29,10 @@ export default function Navbar(props) {
     {
       label: "Archive",
       href: "/archive"
+    },
+    {
+      label: "Search",
+      href: "/search"
     }
   ];
 
@@ -64,10 +68,21 @@ export default function Navbar(props) {
                   ))}
                 </div>
                 <div className="flex w-full items-center justify-between md:w-auto">
-                  <Link href="/" className="w-28">
-                    <span className="block text-center font-semibold text-gray-800 dark:text-white">
-                      {props.title || "Blog"}
-                    </span>
+                  <Link href="/" className="flex items-center">
+                    {props.logoUrl ? (
+                      <Image
+                        src={props.logoUrl}
+                        alt={props.title || "Blog"}
+                        width={120}
+                        height={48}
+                        className="h-10 w-auto object-contain"
+                        unoptimized
+                      />
+                    ) : (
+                      <span className="font-semibold text-gray-800 dark:text-white">
+                        {props.title || "Blog"}
+                      </span>
+                    )}
                   </Link>
                   <Disclosure.Button
                     aria-label="Toggle Menu"

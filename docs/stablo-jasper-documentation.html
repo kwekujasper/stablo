@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Stablo Jasper — Project Documentation</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; font-size: 13px; color: #1a1a2e; line-height: 1.7; background: #fff; }
+  .cover { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); color: #fff; min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 60px 40px; page-break-after: always; }
+  .cover h1 { font-size: 42px; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; }
+  .cover .subtitle { font-size: 18px; color: #a8b2d8; margin-bottom: 40px; }
+  .cover .badge { display: inline-block; background: #e94560; color: #fff; border-radius: 20px; padding: 6px 18px; font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 30px; }
+  .cover .meta { font-size: 13px; color: #8892b0; margin-top: 50px; }
+  .cover .meta span { display: block; }
+  .toc { padding: 50px 60px; page-break-after: always; }
+  .toc h2 { font-size: 24px; font-weight: 700; color: #1a1a2e; border-bottom: 3px solid #e94560; padding-bottom: 10px; margin-bottom: 30px; }
+  .toc ol { counter-reset: toc; list-style: none; }
+  .toc ol li { padding: 8px 0; border-bottom: 1px dotted #ddd; display: flex; justify-content: space-between; font-size: 14px; }
+  .toc ol li span { color: #666; }
+  .section { padding: 50px 60px; page-break-before: always; }
+  .section:first-of-type { page-break-before: auto; }
+  h2.section-title { font-size: 26px; font-weight: 800; color: #0f3460; border-left: 5px solid #e94560; padding-left: 15px; margin-bottom: 30px; }
+  h3 { font-size: 16px; font-weight: 700; color: #16213e; margin: 28px 0 10px; }
+  h4 { font-size: 14px; font-weight: 600; color: #333; margin: 18px 0 8px; }
+  p { margin-bottom: 12px; color: #333; }
+  ul, ol { padding-left: 22px; margin-bottom: 14px; }
+  li { margin-bottom: 5px; }
+  code { background: #f0f4ff; border: 1px solid #d0d9f0; border-radius: 4px; padding: 1px 6px; font-family: 'Consolas', 'Courier New', monospace; font-size: 12px; color: #0f3460; }
+  pre { background: #0d1117; color: #c9d1d9; border-radius: 8px; padding: 18px 20px; overflow-x: auto; margin: 14px 0 18px; font-family: 'Consolas', monospace; font-size: 12px; line-height: 1.6; }
+  pre .comment { color: #8b949e; }
+  pre .key { color: #79c0ff; }
+  pre .val { color: #a5d6ff; }
+  pre .str { color: #a8ff78; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 12.5px; }
+  th { background: #0f3460; color: #fff; padding: 10px 14px; text-align: left; font-weight: 600; }
+  td { padding: 9px 14px; border-bottom: 1px solid #eee; vertical-align: top; }
+  tr:nth-child(even) td { background: #f8f9ff; }
+  .badge-pill { display: inline-block; border-radius: 12px; padding: 2px 10px; font-size: 11px; font-weight: 700; }
+  .badge-green { background: #d4edda; color: #155724; }
+  .badge-blue { background: #d0e8ff; color: #0f3460; }
+  .badge-red { background: #fde8e8; color: #842029; }
+  .badge-orange { background: #fff3cd; color: #664d03; }
+  .callout { border-left: 4px solid #e94560; background: #fff5f5; padding: 14px 18px; border-radius: 0 8px 8px 0; margin: 16px 0; }
+  .callout.info { border-color: #0f3460; background: #f0f4ff; }
+  .callout.success { border-color: #28a745; background: #f0fff4; }
+  .callout strong { display: block; margin-bottom: 4px; }
+  .flow { background: #f8f9ff; border: 1px solid #d0d9f0; border-radius: 8px; padding: 20px; margin: 14px 0; font-family: monospace; font-size: 12px; line-height: 2; }
+  .flow .arrow { color: #e94560; font-weight: bold; }
+  .divider { border: none; border-top: 2px solid #f0f0f0; margin: 30px 0; }
+  .footer { text-align: center; padding: 30px; color: #999; font-size: 11px; border-top: 1px solid #eee; }
+  @media print {
+    body { font-size: 12px; }
+    .cover { min-height: auto; padding: 80px 40px; }
+    .section, .toc { padding: 40px 50px; }
+    pre { white-space: pre-wrap; word-break: break-all; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════ COVER ═══ -->
+<div class="cover">
+  <div class="badge">Technical Documentation</div>
+  <h1>Stablo Jasper</h1>
+  <div class="subtitle">Headless WordPress → Next.js Blog<br>Architecture, Setup & Developer Reference</div>
+  <div style="display:flex;gap:20px;justify-content:center;margin-top:20px;flex-wrap:wrap;">
+    <div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:14px 24px;text-align:center;">
+      <div style="font-size:24px;font-weight:800;">Next.js 14.2</div>
+      <div style="font-size:11px;color:#a8b2d8;margin-top:4px;">Frontend Framework</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:14px 24px;text-align:center;">
+      <div style="font-size:24px;font-weight:800;">WPGraphQL</div>
+      <div style="font-size:11px;color:#a8b2d8;margin-top:4px;">Data Layer</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:14px 24px;text-align:center;">
+      <div style="font-size:24px;font-weight:800;">ISR</div>
+      <div style="font-size:11px;color:#a8b2d8;margin-top:4px;">Incremental Static Regen</div>
+    </div>
+    <div style="background:rgba(255,255,255,0.1);border-radius:10px;padding:14px 24px;text-align:center;">
+      <div style="font-size:24px;font-weight:800;">AdSense</div>
+      <div style="font-size:11px;color:#a8b2d8;margin-top:4px;">Monetisation</div>
+    </div>
+  </div>
+  <div class="meta">
+    <span>Project: stablo-jasper (Private GitHub Repo)</span>
+    <span>Generated: June 2026</span>
+    <span>Stack: WordPress + WPGraphQL + Next.js + TypeScript + Tailwind CSS</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ TOC ═══ -->
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li><span>1. Project Overview &amp; Architecture</span><span>3</span></li>
+    <li><span>2. WordPress Plugins Required</span><span>4</span></li>
+    <li><span>3. Environment Variables (.env.local)</span><span>5</span></li>
+    <li><span>4. Data Flow — How It All Works</span><span>6</span></li>
+    <li><span>5. GraphQL API — Endpoints &amp; Queries</span><span>7</span></li>
+    <li><span>6. Next.js API Routes</span><span>8</span></li>
+    <li><span>7. ISR Webhook — On-Demand Revalidation</span><span>9</span></li>
+    <li><span>8. Security Architecture</span><span>10</span></li>
+    <li><span>9. SEO Setup &amp; Schema Markup</span><span>11</span></li>
+    <li><span>10. AdSense Integration</span><span>12</span></li>
+    <li><span>11. Comments System</span><span>13</span></li>
+    <li><span>12. Newsletter (Mailchimp)</span><span>13</span></li>
+    <li><span>13. Subscriber-Gated Content</span><span>14</span></li>
+    <li><span>14. Push Notifications</span><span>14</span></li>
+    <li><span>15. File Structure</span><span>15</span></li>
+    <li><span>16. Feature Flags</span><span>16</span></li>
+    <li><span>17. Launch Checklist</span><span>17</span></li>
+    <li><span>18. Git &amp; Deployment</span><span>18</span></li>
+  </ol>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ 1. OVERVIEW ═══ -->
+<div class="section">
+  <h2 class="section-title">1. Project Overview &amp; Architecture</h2>
+
+  <p>
+    <strong>Stablo Jasper</strong> is a headless blog platform where <strong>WordPress</strong> manages content
+    and a <strong>Next.js 14</strong> application serves the public-facing website. The two systems
+    communicate exclusively through <strong>WPGraphQL</strong> — a GraphQL API layer installed on WordPress.
+  </p>
+
+  <h3>Architecture Diagram</h3>
+  <div class="flow">
+    ┌──────────────────────────┐<br>
+    │   WordPress (Laragon /   │<br>
+    │   or production host)    │<br>
+    │                          │<br>
+    │  Posts · Pages · Media   │<br>
+    │  Yoast SEO · ACF · Users │<br>
+    └──────────┬───────────────┘<br>
+               │ WPGraphQL<br>
+               │ /graphql endpoint<br>
+               ▼<br>
+    ┌──────────────────────────┐        ┌──────────────────┐<br>
+    │   lib/wordpress/api.ts   │◄──────►│  Next.js Cache   │<br>
+    │   (graphql-request)      │        │  revalidate:3600 │<br>
+    └──────────┬───────────────┘        └──────────────────┘<br>
+               │<br>
+               ▼<br>
+    ┌──────────────────────────┐<br>
+    │   Next.js App Router     │<br>
+    │                          │<br>
+    │  / (home)                │<br>
+    │  /post/[slug]            │<br>
+    │  /category/[slug]        │<br>
+    │  /author/[slug]          │<br>
+    │  /archive                │<br>
+    │  /search                 │<br>
+    └──────────┬───────────────┘<br>
+               │ Static HTML + JS<br>
+               ▼<br>
+    ┌──────────────────────────┐<br>
+    │   End User / Browser     │<br>
+    └──────────────────────────┘<br>
+    <br>
+    When WP publishes a post:<br>
+    WP <span class="arrow">→</span> POST /api/revalidate <span class="arrow">→</span> Next.js rebuilds /post/[slug] <span class="arrow">→</span> fresh page in seconds
+  </div>
+
+  <h3>Technology Stack</h3>
+  <table>
+    <tr><th>Layer</th><th>Technology</th><th>Version</th><th>Purpose</th></tr>
+    <tr><td>CMS / Backend</td><td>WordPress</td><td>6.x</td><td>Content management, users, media</td></tr>
+    <tr><td>GraphQL API</td><td>WPGraphQL</td><td>Latest</td><td>Exposes WP data as a GraphQL endpoint</td></tr>
+    <tr><td>Frontend</td><td>Next.js</td><td>14.2.29</td><td>React framework, SSG + ISR</td></tr>
+    <tr><td>Language</td><td>TypeScript</td><td>5.3</td><td>Type safety across the data layer</td></tr>
+    <tr><td>Styling</td><td>Tailwind CSS</td><td>3.4</td><td>Utility-first CSS</td></tr>
+    <tr><td>GQL Client</td><td>graphql-request</td><td>7.x</td><td>Lightweight GraphQL fetching</td></tr>
+    <tr><td>Validation</td><td>Zod</td><td>4.x</td><td>API route input validation</td></tr>
+    <tr><td>Images</td><td>plaiceholder + sharp</td><td>3.x / 0.33</td><td>Blur placeholders, optimisation</td></tr>
+    <tr><td>Rate Limiting</td><td>Custom / Upstash</td><td>—</td><td>API route protection</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ 2. PLUGINS ═══ -->
+<div class="section">
+  <h2 class="section-title">2. WordPress Plugins Required</h2>
+  <p>Install these plugins in WordPress Admin → Plugins → Add New <strong>before</strong> launching.</p>
+
+  <table>
+    <tr><th>Plugin Name</th><th>Status</th><th>Why It's Needed</th><th>Notes</th></tr>
+    <tr>
+      <td><strong>WPGraphQL</strong></td>
+      <td><span class="badge-pill badge-green">Installed</span></td>
+      <td>Core GraphQL API layer — exposes all WP data via <code>/graphql</code></td>
+      <td>Already installed per user</td>
+    </tr>
+    <tr>
+      <td><strong>Yoast SEO</strong></td>
+      <td><span class="badge-pill badge-red">Required</span></td>
+      <td>Generates per-post SEO titles, meta descriptions, OG images, JSON-LD schema</td>
+      <td>Free version sufficient</td>
+    </tr>
+    <tr>
+      <td><strong>WPGraphQL for Yoast SEO</strong></td>
+      <td><span class="badge-pill badge-red">Required</span></td>
+      <td>Bridges Yoast data into the GraphQL endpoint. Without it, SEO fields are unavailable.</td>
+      <td>Set <code>NEXT_PUBLIC_YOAST_WPGRAPHQL=true</code> in .env.local after installing</td>
+    </tr>
+    <tr>
+      <td><strong>WPGraphQL JWT Authentication</strong></td>
+      <td><span class="badge-pill badge-orange">Optional</span></td>
+      <td>Issues JWT tokens for subscriber-gated content. Users log in via the Next.js frontend.</td>
+      <td>Add <code>define('JWT_AUTH_SECRET_KEY','your-secret');</code> to wp-config.php</td>
+    </tr>
+    <tr>
+      <td><strong>Advanced Custom Fields (ACF)</strong></td>
+      <td><span class="badge-pill badge-orange">Optional</span></td>
+      <td>Adds custom fields to posts: <code>is_subscriber_only</code>, <code>ad_slots_enabled</code></td>
+      <td>Free version sufficient</td>
+    </tr>
+    <tr>
+      <td><strong>WPGraphQL for ACF</strong></td>
+      <td><span class="badge-pill badge-orange">Optional</span></td>
+      <td>Exposes ACF fields in GraphQL. Required for subscriber-gating to work.</td>
+      <td>Set <code>NEXT_PUBLIC_ACF_WPGRAPHQL=true</code> in .env.local after installing</td>
+    </tr>
+    <tr>
+      <td><strong>Akismet Anti-Spam</strong></td>
+      <td><span class="badge-pill badge-orange">Recommended</span></td>
+      <td>Comment spam detection. Server checks every comment submission against Akismet's API.</td>
+      <td>Free for personal blogs at akismet.com</td>
+    </tr>
+    <tr>
+      <td><strong>OneSignal</strong></td>
+      <td><span class="badge-pill badge-orange">Optional</span></td>
+      <td>Push notification service. WP plugin auto-fires notifications on post publish.</td>
+      <td>Set <code>NEXT_PUBLIC_ONESIGNAL_APP_ID</code> in .env.local</td>
+    </tr>
+    <tr>
+      <td><strong>WebPushr</strong></td>
+      <td><span class="badge-pill badge-orange">Optional</span></td>
+      <td>Alternative/supplementary push notification service.</td>
+      <td>Set <code>NEXT_PUBLIC_WEBPUSHR_KEY</code> in .env.local</td>
+    </tr>
+  </table>
+
+  <div class="callout info">
+    <strong>WPGraphQL Security Setting</strong>
+    In WP Admin → GraphQL → Settings: disable <strong>public introspection</strong> in production and restrict CORS allowed origins to your Next.js domain only.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ 3. ENV VARS ═══ -->
+<div class="section">
+  <h2 class="section-title">3. Environment Variables</h2>
+  <p>Copy <code>.env.local.example</code> → <code>.env.local</code> and fill in every value.</p>
+
+  <pre><span class="comment"># ─── WordPress / WPGraphQL ──────────────────────────────────────────</span>
+<span class="key">WP_GRAPHQL_URL</span>=<span class="str">https://yourdomain.com/graphql</span>
+<span class="key">WP_SITE_URL</span>=<span class="str">https://yourdomain.com</span>
+
+<span class="comment"># ─── ISR Webhook (generate with: openssl rand -base64 32) ───────────</span>
+<span class="key">REVALIDATE_SECRET</span>=<span class="str">your-strong-random-secret</span>
+
+<span class="comment"># ─── JWT Auth (must match JWT_AUTH_SECRET_KEY in wp-config.php) ─────</span>
+<span class="key">WP_JWT_AUTH_SECRET</span>=<span class="str">your-jwt-secret</span>
+
+<span class="comment"># ─── Newsletter (Mailchimp) ──────────────────────────────────────────</span>
+<span class="key">MAILCHIMP_API_KEY</span>=<span class="str">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-us1</span>
+<span class="key">MAILCHIMP_AUDIENCE_ID</span>=<span class="str">abc123def</span>
+<span class="key">MAILCHIMP_SERVER_PREFIX</span>=<span class="str">us1</span>
+
+<span class="comment"># ─── Google AdSense ──────────────────────────────────────────────────</span>
+<span class="key">NEXT_PUBLIC_ADSENSE_PUB_ID</span>=<span class="str">ca-pub-XXXXXXXXXX</span>
+
+<span class="comment"># ─── Push Notifications ──────────────────────────────────────────────</span>
+<span class="key">NEXT_PUBLIC_ONESIGNAL_APP_ID</span>=<span class="str">xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</span>
+<span class="key">NEXT_PUBLIC_WEBPUSHR_KEY</span>=<span class="str">your-webpushr-key</span>
+
+<span class="comment"># ─── Sitemap ─────────────────────────────────────────────────────────</span>
+<span class="key">SITE_URL</span>=<span class="str">https://yourdomain.com</span>
+
+<span class="comment"># ─── Comment Spam Protection ─────────────────────────────────────────</span>
+<span class="key">AKISMET_API_KEY</span>=<span class="str">your-akismet-key</span>
+
+<span class="comment"># ─── Feature Flags (set to "true" once plugins are installed) ────────</span>
+<span class="key">NEXT_PUBLIC_YOAST_WPGRAPHQL</span>=<span class="str">false</span>
+<span class="key">NEXT_PUBLIC_ACF_WPGRAPHQL</span>=<span class="str">false</span></pre>
+
+  <div class="callout">
+    <strong>Security Rule</strong>
+    Only variables prefixed <code>NEXT_PUBLIC_</code> are exposed to the browser. Never prefix secrets (REVALIDATE_SECRET, WP_JWT_AUTH_SECRET, MAILCHIMP_API_KEY, AKISMET_API_KEY) with NEXT_PUBLIC_.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ 4. DATA FLOW ═══ -->
+<div class="section">
+  <h2 class="section-title">4. Data Flow — How It All Works</h2>
+
+  <h3>Page Load (Static Generation)</h3>
+  <div class="flow">
+    1. <strong>Build time</strong>: Next.js calls <code>generateStaticParams()</code><br>
+    &nbsp;&nbsp;&nbsp;<span class="arrow">→</span> queries WPGraphQL for all post slugs<br>
+    &nbsp;&nbsp;&nbsp;<span class="arrow">→</span> generates one static HTML file per post<br><br>
+    2. <strong>User visits</strong> <code>/post/my-article</code><br>
+    &nbsp;&nbsp;&nbsp;<span class="arrow">→</span> CDN serves pre-built HTML instantly (no WordPress involved)<br>
+    &nbsp;&nbsp;&nbsp;<span class="arrow">→</span> Page loads in &lt;100ms<br><br>
+    3. <strong>Cache expires</strong> (after 3600s / 1 hour)<br>
+    &nbsp;&nbsp;&nbsp;<span class="arrow">→</span> Next.js background-regenerates the page from fresh WP data<br>
+    &nbsp;&nbsp;&nbsp;<span class="arrow">→</span> Users never see a loading state
+  </div>
+
+  <h3>On-Demand Revalidation (Webhook)</h3>
+  <div class="flow">
+    1. You publish/update a post in WordPress<br>
+    &nbsp;&nbsp;&nbsp;<span class="arrow">→</span> WP fires: <code>POST https://yoursite.com/api/revalidate</code><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with header: <code>Authorization: Bearer REVALIDATE_SECRET</code><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;with body: <code>{"type":"post","slug":"my-article"}</code><br><br>
+    2. Next.js validates the secret<br>
+    &nbsp;&nbsp;&nbsp;<span class="arrow">→</span> Calls <code>revalidatePath('/post/my-article')</code> + <code>revalidateTag('post-my-article')</code><br><br>
+    3. Next request to that URL fetches fresh data from WPGraphQL<br>
+    &nbsp;&nbsp;&nbsp;<span class="arrow">→</span> New static HTML built and cached<br>
+    &nbsp;&nbsp;&nbsp;<span class="arrow">→</span> Visitors see updated content within seconds
+  </div>
+
+  <h3>Image Delivery</h3>
+  <p>WordPress media URLs pass through Next.js's built-in image optimiser (<code>next/image</code>), which automatically converts to <strong>WebP / AVIF</strong>, applies lazy loading, and sizes images correctly for the viewport. No CDN plugin needed on WordPress for images.</p>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ 5. GRAPHQL ═══ -->
+<div class="section">
+  <h2 class="section-title">5. GraphQL API — Endpoints &amp; Queries</h2>
+
+  <p>All queries live in <code>lib/wordpress/queries.ts</code>. The client is in <code>lib/wordpress/client.ts</code>. Public API functions are in <code>lib/wordpress/api.ts</code>.</p>
+
+  <h3>WPGraphQL Endpoint</h3>
+  <pre>https://yourdomain.com/graphql   <span class="comment"># POST requests only</span></pre>
+
+  <h3>Query Reference</h3>
+  <table>
+    <tr><th>Function (api.ts)</th><th>GraphQL Query</th><th>Used On</th></tr>
+    <tr><td><code>getAllPosts(first)</code></td><td>GetAllPosts — cursor-paginated</td><td>Homepage</td></tr>
+    <tr><td><code>getPostBySlug(slug)</code></td><td>GetPostBySlug — full content + SEO</td><td>/post/[slug]</td></tr>
+    <tr><td><code>getAllPostsSlugs()</code></td><td>GetAllPostSlugs — slug + modified date</td><td>Static generation</td></tr>
+    <tr><td><code>getPaginatedPosts(first, after)</code></td><td>GetPaginatedPosts — cursor-based</td><td>/archive</td></tr>
+    <tr><td><code>searchPosts(query)</code></td><td>SearchPosts — where:{search:}</td><td>/api/search</td></tr>
+    <tr><td><code>getRelatedPosts(catIds, excludeId)</code></td><td>GetRelatedPosts — by category</td><td>Post sidebar</td></tr>
+    <tr><td><code>getAllCategories()</code></td><td>GetAllCategories — with counts</td><td>Sidebar, sitemap</td></tr>
+    <tr><td><code>getPostsByCategory(slug)</code></td><td>GetPostsByCategory + category info</td><td>/category/[slug]</td></tr>
+    <tr><td><code>getTopCategories(limit)</code></td><td>Derived from getAllCategories</td><td>Widgets</td></tr>
+    <tr><td><code>getAllAuthors()</code></td><td>GetAllAuthors — published only</td><td>About, sitemap</td></tr>
+    <tr><td><code>getAuthorBySlug(slug)</code></td><td>GetAuthorBySlug — with avatar</td><td>/author/[slug]</td></tr>
+    <tr><td><code>getPostsByAuthor(slug)</code></td><td>GetPostsByAuthor — cursor-based</td><td>/author/[slug]</td></tr>
+    <tr><td><code>getSettings()</code></td><td>GetGeneralSettings</td><td>Navbar, footer, metadata</td></tr>
+    <tr><td><code>getComments(postId)</code></td><td>GetComments — approved only, nested</td><td>/post/[slug]</td></tr>
+    <tr><td><code>getMenuItems(location)</code></td><td>GetMenuItems — by menu location</td><td>Navbar (optional)</td></tr>
+  </table>
+
+  <h3>Reusable GraphQL Fragments (fragments.ts)</h3>
+  <table>
+    <tr><th>Fragment</th><th>Fields</th></tr>
+    <tr><td><code>PostFields</code></td><td>id, databaseId, slug, title, excerpt, date, modified, featuredImage, categories, author</td></tr>
+    <tr><td><code>AuthorFields</code></td><td>id, name, slug, description, avatar.url</td></tr>
+    <tr><td><code>CategoryFields</code></td><td>id, name, slug, count, description</td></tr>
+    <tr><td><code>ImageFields</code></td><td>sourceUrl, altText, mediaDetails.{width,height}</td></tr>
+    <tr><td><code>SeoFields</code></td><td>title, metaDesc, opengraphTitle/Description/Image, twitterTitle/Image, canonical, schema.raw</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ 6. API ROUTES ═══ -->
+<div class="section">
+  <h2 class="section-title">6. Next.js API Routes</h2>
+
+  <p>All API routes live in <code>app/api/</code>. Every route validates input with Zod and applies rate limiting.</p>
+
+  <table>
+    <tr><th>Route</th><th>Method</th><th>Auth Required</th><th>Purpose</th></tr>
+    <tr>
+      <td><code>/api/revalidate</code></td>
+      <td>POST</td>
+      <td>Bearer REVALIDATE_SECRET</td>
+      <td>ISR webhook — triggers page rebuild on WP publish/update</td>
+    </tr>
+    <tr>
+      <td><code>/api/auth/login</code></td>
+      <td>POST</td>
+      <td>None (is the auth)</td>
+      <td>Proxies to WP JWT endpoint; sets httpOnly cookie</td>
+    </tr>
+    <tr>
+      <td><code>/api/auth/logout</code></td>
+      <td>POST</td>
+      <td>None</td>
+      <td>Clears the httpOnly auth cookie</td>
+    </tr>
+    <tr>
+      <td><code>/api/auth/me</code></td>
+      <td>GET</td>
+      <td>Cookie</td>
+      <td>Validates token against WP; used to check if user is logged in</td>
+    </tr>
+    <tr>
+      <td><code>/api/comments</code></td>
+      <td>GET</td>
+      <td>None</td>
+      <td>Fetches approved comments for a post (?postId=123)</td>
+    </tr>
+    <tr>
+      <td><code>/api/comments</code></td>
+      <td>POST</td>
+      <td>None</td>
+      <td>Submits comment → Akismet spam check → WP REST API</td>
+    </tr>
+    <tr>
+      <td><code>/api/newsletter</code></td>
+      <td>POST</td>
+      <td>None</td>
+      <td>Adds email to Mailchimp audience (double opt-in)</td>
+    </tr>
+    <tr>
+      <td><code>/api/search</code></td>
+      <td>GET</td>
+      <td>None</td>
+      <td>Full-text search via WPGraphQL (?q=keyword)</td>
+    </tr>
+  </table>
+
+  <h3>Rate Limits</h3>
+  <table>
+    <tr><th>Route</th><th>Limit</th><th>Window</th></tr>
+    <tr><td>/api/revalidate</td><td>60 requests</td><td>per minute per IP</td></tr>
+    <tr><td>/api/auth/login</td><td>5 attempts</td><td>per 15 minutes per IP</td></tr>
+    <tr><td>/api/comments POST</td><td>10 requests</td><td>per minute per IP</td></tr>
+    <tr><td>/api/newsletter</td><td>5 requests</td><td>per minute per IP</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ 7. ISR WEBHOOK ═══ -->
+<div class="section">
+  <h2 class="section-title">7. ISR Webhook — On-Demand Revalidation</h2>
+
+  <h3>What is ISR?</h3>
+  <p>
+    <strong>Incremental Static Regeneration (ISR)</strong> means pages are pre-built as static HTML (fast, no server cost)
+    but can be refreshed on-demand without a full redeploy. When you publish a post, WordPress tells
+    Next.js which page to rebuild — that specific page is regenerated in the background within seconds.
+  </p>
+
+  <h3>WordPress Setup (functions.php)</h3>
+  <p>Add this to your active theme's <code>functions.php</code> or a custom plugin file:</p>
+  <pre>add_action('save_post', function($post_id, $post) {
+    if ($post->post_status !== 'publish') return;
+    if (wp_is_post_revision($post_id)) return;
+
+    wp_remote_post('https://yoursite.com/api/revalidate', [
+        'headers' => [
+            'Content-Type'  => 'application/json',
+            'Authorization' => 'Bearer ' . YOUR_REVALIDATE_SECRET,
+        ],
+        'body'     => json_encode([
+            'type' => 'post',
+            'slug' => $post->post_name,
+        ]),
+        'blocking' => false,   <span class="comment">// fire-and-forget, doesn't slow WP save</span>
+    ]);
+}, 10, 2);</pre>
+
+  <h3>Webhook Payload Reference</h3>
+  <table>
+    <tr><th>type value</th><th>What gets revalidated</th></tr>
+    <tr><td><code>"post"</code></td><td>/post/[slug], homepage, archive</td></tr>
+    <tr><td><code>"category"</code></td><td>/category/[slug]</td></tr>
+    <tr><td><code>"author"</code></td><td>/author/[slug]</td></tr>
+    <tr><td><code>"page"</code></td><td>/[slug]</td></tr>
+    <tr><td><code>"settings"</code></td><td>Root layout (navbar/footer)</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ 8. SECURITY ═══ -->
+<div class="section">
+  <h2 class="section-title">8. Security Architecture</h2>
+
+  <h3>HTTP Security Headers (next.config.js)</h3>
+  <table>
+    <tr><th>Header</th><th>Value / Purpose</th></tr>
+    <tr><td>Content-Security-Policy</td><td>Restricts scripts, images, frames to known origins. Whitelists Google AdSense domains.</td></tr>
+    <tr><td>X-Frame-Options</td><td>SAMEORIGIN — prevents clickjacking</td></tr>
+    <tr><td>X-Content-Type-Options</td><td>nosniff — prevents MIME-type sniffing</td></tr>
+    <tr><td>Referrer-Policy</td><td>strict-origin-when-cross-origin</td></tr>
+    <tr><td>Permissions-Policy</td><td>Disables camera, microphone, geolocation</td></tr>
+    <tr><td>Strict-Transport-Security</td><td>Forces HTTPS for 2 years (preload)</td></tr>
+  </table>
+
+  <h3>Authentication (JWT)</h3>
+  <ul>
+    <li>JWT tokens are issued by WordPress via WPGraphQL JWT Auth plugin</li>
+    <li>Tokens are stored in <strong>httpOnly cookies</strong> — never in localStorage (XSS-safe)</li>
+    <li>Cookie is <code>SameSite=Strict</code> — CSRF-safe</li>
+    <li>Token validation happens server-side on <code>/api/auth/me</code></li>
+    <li>Never forward WordPress error messages to the client</li>
+  </ul>
+
+  <h3>Input Validation</h3>
+  <ul>
+    <li>Every API route body is validated with <strong>Zod</strong> before processing</li>
+    <li>Slug parameters sanitised (strip non-alphanumeric/hyphen) before GraphQL calls</li>
+    <li>Search queries limited to 100 chars and sanitised with regex</li>
+    <li>Comment content length capped at 5000 characters</li>
+  </ul>
+
+  <h3>Spam Protection</h3>
+  <ul>
+    <li>All comment submissions run through <strong>Akismet API</strong> before being sent to WordPress</li>
+    <li>Spam comments silently return success (don't tip off spammers)</li>
+    <li>Login rate limit: 5 attempts per 15 minutes per IP</li>
+  </ul>
+
+  <div class="callout">
+    <strong>WPGraphQL Introspection</strong>
+    Disable public introspection in WP Admin → GraphQL → Settings in production. This hides your schema from potential attackers.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ 9. SEO ═══ -->
+<div class="section">
+  <h2 class="section-title">9. SEO Setup &amp; Schema Markup</h2>
+
+  <h3>Per-Page Metadata (generateMetadata)</h3>
+  <p>Every page exports a <code>generateMetadata()</code> function that sets:</p>
+  <ul>
+    <li>Title, description, canonical URL</li>
+    <li>OpenGraph tags (title, description, image, type: article)</li>
+    <li>Twitter Card (summary_large_image)</li>
+    <li>Published/modified dates for articles</li>
+    <li>If Yoast plugin installed: pulls all fields directly from Yoast via GraphQL</li>
+  </ul>
+
+  <h3>JSON-LD Schema Markup (components/seo/JsonLd.tsx)</h3>
+  <table>
+    <tr><th>Page</th><th>Schema Types Injected</th></tr>
+    <tr><td>Homepage</td><td>WebSite (with SearchAction), Organization</td></tr>
+    <tr><td>/post/[slug]</td><td>BlogPosting, BreadcrumbList, Person (author)</td></tr>
+    <tr><td>/category/[slug]</td><td>CollectionPage, BreadcrumbList</td></tr>
+    <tr><td>/author/[slug]</td><td>ProfilePage, Person</td></tr>
+    <tr><td>All pages</td><td>BreadcrumbList</td></tr>
+  </table>
+
+  <h3>BlogPosting Schema Fields</h3>
+  <ul>
+    <li>headline, description, url, datePublished, dateModified</li>
+    <li>author (name + url), publisher (name + logo), image (url + dimensions)</li>
+    <li>keywords (from categories), articleSection (first category)</li>
+    <li>mainEntityOfPage (WebPage)</li>
+  </ul>
+
+  <h3>Sitemap</h3>
+  <p>Generated automatically after every build via <code>next-sitemap</code>. Includes all published posts, category pages, and author pages with <code>lastmod</code> from WordPress's <code>post.modified</code> date.</p>
+
+  <h3>Core Web Vitals</h3>
+  <ul>
+    <li>Hero/featured images use <code>priority</code> prop — preloaded, no LCP penalty</li>
+    <li>All other images are lazy-loaded with automatic WebP/AVIF conversion</li>
+    <li>Ad slots have CSS <code>min-height</code> reserved — no Cumulative Layout Shift (CLS)</li>
+    <li>Heavy components (Comments, Ads, Newsletter) loaded via <code>next/dynamic</code></li>
+  </ul>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ 10. ADSENSE ═══ -->
+<div class="section">
+  <h2 class="section-title">10. AdSense Integration</h2>
+
+  <h3>Ad Components (components/ads/)</h3>
+  <table>
+    <tr><th>Component</th><th>File</th><th>Placement</th><th>Format</th></tr>
+    <tr><td>AdSenseScript</td><td>AdSenseScript.tsx</td><td>Root layout (once)</td><td>Auto Ads script — Google places ads automatically</td></tr>
+    <tr><td>AdUnit</td><td>AdUnit.tsx</td><td>Any</td><td>Generic slot with format prop: auto/rectangle/horizontal/vertical</td></tr>
+    <tr><td>InArticleAd</td><td>InArticleAd.tsx</td><td>Inside post body</td><td>Injected after every 4th paragraph (configurable)</td></tr>
+    <tr><td>StickyAd</td><td>StickyAd.tsx</td><td>Sidebar (desktop only)</td><td>Sticky vertical — hidden on mobile, lazy-initialised</td></tr>
+    <tr><td>LeaderboardAd</td><td>LeaderboardAd.tsx</td><td>Navbar / Footer</td><td>728×90 responsive banner</td></tr>
+    <tr><td>PopupAd</td><td>PopupAd.tsx</td><td>Global overlay</td><td>Full-page interstitial, triggered by scroll (70%) or 30s delay</td></tr>
+  </table>
+
+  <h3>Configuration</h3>
+  <pre><span class="comment"># In .env.local</span>
+<span class="key">NEXT_PUBLIC_ADSENSE_PUB_ID</span>=<span class="str">ca-pub-XXXXXXXXXX</span>
+
+<span class="comment"># In app/(website)/post/[slug]/default.js</span>
+<span class="key">NEXT_PUBLIC_IN_ARTICLE_AD_SLOT</span>=<span class="str">1234567890</span></pre>
+
+  <h3>Google Policy Compliance</h3>
+  <ul>
+    <li>Popup close button is always visible immediately</li>
+    <li>24-hour localStorage cooldown between popup displays</li>
+    <li>Ads suppressed on: 404, login modal, gated-content-locked views, search-with-no-results</li>
+    <li>CSP headers whitelist all required Google/AdSense domains</li>
+    <li>Auto Ads loaded with <code>strategy="afterInteractive"</code> — never blocks page render</li>
+  </ul>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ 11. COMMENTS ═══ -->
+<div class="section">
+  <h2 class="section-title">11. Comments System</h2>
+
+  <p>File: <code>components/blog/Comments.tsx</code></p>
+
+  <h3>How It Works</h3>
+  <div class="flow">
+    User submits comment form<br>
+    <span class="arrow">→</span> POST /api/comments (validated with Zod)<br>
+    <span class="arrow">→</span> Akismet spam check (server-side)<br>
+    <span class="arrow">→</span> If clean: POST to WordPress REST API /wp-json/wp/v2/comments<br>
+    <span class="arrow">→</span> Comment appears in WP Admin as pending moderation<br>
+    <span class="arrow">→</span> After admin approves: shows in comments section
+  </div>
+
+  <h3>Features</h3>
+  <ul>
+    <li>Threaded/nested comments (WordPress native)</li>
+    <li>Reply-to with parentId support</li>
+    <li>Author name, email (required), website URL (optional)</li>
+    <li>Optimistic UI — pending message shown immediately</li>
+    <li>Gravatar avatars from WordPress</li>
+    <li>Form validation with react-hook-form</li>
+  </ul>
+
+  <hr class="divider" />
+
+  <h2 class="section-title">12. Newsletter (Mailchimp)</h2>
+
+  <p>File: <code>components/blog/NewsletterForm.tsx</code></p>
+  <p>The newsletter form submits to <code>/api/newsletter</code>, which proxies to Mailchimp's API server-side (your API key is never exposed to the browser). Uses <strong>double opt-in</strong> — subscribers receive a confirmation email before being added (GDPR compliant).</p>
+
+  <h3>Placement</h3>
+  <ul>
+    <li>After post body (full form with first name field)</li>
+    <li>Sidebar (compact single-line form)</li>
+    <li>Footer (compact)</li>
+  </ul>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ 13-14. AUTH + PUSH ═══ -->
+<div class="section">
+  <h2 class="section-title">13. Subscriber-Gated Content</h2>
+
+  <p>Files: <code>components/auth/GatedContent.tsx</code>, <code>components/auth/LoginModal.tsx</code></p>
+
+  <h3>How It Works</h3>
+  <ol>
+    <li>In WordPress: add ACF boolean field <code>is_subscriber_only</code> to the post</li>
+    <li>Set it to <code>true</code> for premium posts</li>
+    <li>Next.js reads the field via GraphQL (requires ACF + WPGraphQL for ACF plugins)</li>
+    <li>If true: shows first 2 paragraphs as teaser + blur gradient + login CTA</li>
+    <li>User clicks "Sign In" → Login Modal appears → submits to <code>/api/auth/login</code></li>
+    <li>On success: JWT stored in httpOnly cookie → full post content revealed</li>
+  </ol>
+
+  <div class="callout success">
+    <strong>Enable Feature Flag</strong>
+    Set <code>NEXT_PUBLIC_ACF_WPGRAPHQL=true</code> in .env.local once ACF and WPGraphQL for ACF plugins are installed.
+  </div>
+
+  <hr class="divider" />
+
+  <h2 class="section-title">14. Push Notifications</h2>
+
+  <p>Files: <code>components/push/OneSignalInit.tsx</code>, <code>components/push/WebPushrInit.tsx</code></p>
+
+  <h3>How It Works</h3>
+  <ul>
+    <li>Both SDKs are loaded once via <code>next/script strategy="lazyOnload"</code> in the root layout</li>
+    <li>They show the browser's native push permission prompt after 30 seconds</li>
+    <li>When you publish a post in WordPress, the WP plugin (OneSignal / WebPushr) automatically sends a push notification to all subscribers</li>
+    <li>No custom API route needed in Next.js — all handled by the WP plugins</li>
+  </ul>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ 15. FILE STRUCTURE ═══ -->
+<div class="section">
+  <h2 class="section-title">15. File Structure</h2>
+
+  <pre>stablo-jasper/
+├── app/
+│   ├── (website)/                 <span class="comment"># Main site routes (shared navbar/footer)</span>
+│   │   ├── layout.tsx             <span class="comment"># Root layout + metadata + AdSense + push SDKs</span>
+│   │   ├── page.js                <span class="comment"># Homepage</span>
+│   │   ├── home.js                <span class="comment"># Homepage UI component</span>
+│   │   ├── about/                 <span class="comment"># About page</span>
+│   │   ├── contact/               <span class="comment"># Contact page</span>
+│   │   ├── archive/               <span class="comment"># Paginated archive</span>
+│   │   ├── post/[slug]/           <span class="comment"># Individual blog posts</span>
+│   │   │   ├── page.js            <span class="comment"># generateStaticParams + generateMetadata</span>
+│   │   │   └── default.js         <span class="comment"># Post UI (body, comments, newsletter, ads)</span>
+│   │   ├── category/[slug]/       <span class="comment"># Category archives (NEW)</span>
+│   │   ├── author/[slug]/         <span class="comment"># Author profile pages (NEW)</span>
+│   │   └── search/                <span class="comment"># Search page (NEW)</span>
+│   ├── api/
+│   │   ├── revalidate/route.ts    <span class="comment"># ISR webhook</span>
+│   │   ├── auth/login/route.ts    <span class="comment"># JWT login</span>
+│   │   ├── auth/logout/route.ts   <span class="comment"># Logout</span>
+│   │   ├── auth/me/route.ts       <span class="comment"># Token validation</span>
+│   │   ├── comments/route.ts      <span class="comment"># Comment GET + POST</span>
+│   │   ├── newsletter/route.ts    <span class="comment"># Mailchimp subscribe</span>
+│   │   └── search/route.ts        <span class="comment"># Search proxy</span>
+│   ├── layout.tsx                 <span class="comment"># Root HTML (fonts, providers)</span>
+│   └── not-found.tsx              <span class="comment"># Custom 404 page</span>
+├── components/
+│   ├── ads/                       <span class="comment"># AdSense components</span>
+│   │   ├── AdSenseScript.tsx      <span class="comment"># Auto Ads loader</span>
+│   │   ├── AdUnit.tsx             <span class="comment"># Generic ad slot</span>
+│   │   ├── InArticleAd.tsx        <span class="comment"># Between paragraphs</span>
+│   │   ├── StickyAd.tsx           <span class="comment"># Sidebar sticky</span>
+│   │   ├── LeaderboardAd.tsx      <span class="comment"># Header/footer banner</span>
+│   │   └── PopupAd.tsx            <span class="comment"># Interstitial popup</span>
+│   ├── auth/
+│   │   ├── LoginModal.tsx         <span class="comment"># Login dialog</span>
+│   │   └── GatedContent.tsx       <span class="comment"># Subscriber content gate</span>
+│   ├── blog/
+│   │   ├── Comments.tsx           <span class="comment"># Threaded comments + form</span>
+│   │   ├── NewsletterForm.tsx     <span class="comment"># Email subscription form</span>
+│   │   ├── authorCard.js          <span class="comment"># Post author bio card</span>
+│   │   └── category.js            <span class="comment"># Category label badges</span>
+│   ├── push/
+│   │   ├── OneSignalInit.tsx      <span class="comment"># OneSignal SDK loader</span>
+│   │   └── WebPushrInit.tsx       <span class="comment"># WebPushr SDK loader</span>
+│   └── seo/
+│       └── JsonLd.tsx             <span class="comment"># JSON-LD schema components</span>
+├── lib/
+│   ├── wordpress/                 <span class="comment"># WP data layer (replaces lib/sanity/)</span>
+│   │   ├── client.ts              <span class="comment"># graphql-request client (public + auth)</span>
+│   │   ├── types.ts               <span class="comment"># TypeScript interfaces</span>
+│   │   ├── fragments.ts           <span class="comment"># Reusable GQL fragments</span>
+│   │   ├── queries.ts             <span class="comment"># All GraphQL query strings</span>
+│   │   ├── api.ts                 <span class="comment"># Public fetch functions</span>
+│   │   └── image.ts               <span class="comment"># Image URL helpers + blur placeholder</span>
+│   └── ratelimit.ts               <span class="comment"># In-process rate limiter</span>
+├── next.config.js                 <span class="comment"># Security headers, image domains, WP hostname</span>
+├── next-sitemap.config.js         <span class="comment"># Sitemap — fetches all slugs from WPGraphQL</span>
+├── .env.local                     <span class="comment"># Your secrets (never commit this)</span>
+└── .env.local.example             <span class="comment"># Template for .env.local</span></pre>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ 16. FLAGS ═══ -->
+<div class="section">
+  <h2 class="section-title">16. Feature Flags</h2>
+  <p>These flags activate optional features once the corresponding WordPress plugins are installed.</p>
+
+  <table>
+    <tr><th>Flag</th><th>Default</th><th>What It Unlocks</th><th>Requires Plugin</th></tr>
+    <tr>
+      <td><code>NEXT_PUBLIC_YOAST_WPGRAPHQL</code></td>
+      <td>false</td>
+      <td>Full Yoast SEO metadata in GraphQL (title, meta, OG images, JSON-LD schema from Yoast)</td>
+      <td>WPGraphQL for Yoast SEO</td>
+    </tr>
+    <tr>
+      <td><code>NEXT_PUBLIC_ACF_WPGRAPHQL</code></td>
+      <td>false</td>
+      <td>ACF custom fields (is_subscriber_only, ad_slots_enabled) in GraphQL</td>
+      <td>WPGraphQL for ACF</td>
+    </tr>
+  </table>
+
+  <div class="callout info">
+    <strong>How to activate</strong>
+    1. Install the WordPress plugin. 2. Set the flag to <code>true</code> in .env.local. 3. Restart the dev server or redeploy.
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ 17. CHECKLIST ═══ -->
+<div class="section">
+  <h2 class="section-title">17. Launch Checklist</h2>
+
+  <h3>WordPress Setup</h3>
+  <table>
+    <tr><th>Task</th><th>Status</th></tr>
+    <tr><td>Install Yoast SEO + WPGraphQL for Yoast SEO</td><td>⬜ Todo</td></tr>
+    <tr><td>Install WPGraphQL JWT Authentication + add secret to wp-config.php</td><td>⬜ Todo</td></tr>
+    <tr><td>Install ACF + WPGraphQL for ACF + create is_subscriber_only field</td><td>⬜ Todo</td></tr>
+    <tr><td>Install Akismet + enter API key</td><td>⬜ Todo</td></tr>
+    <tr><td>Install OneSignal + WebPushr WP plugins</td><td>⬜ Todo</td></tr>
+    <tr><td>Disable WPGraphQL introspection in production</td><td>⬜ Todo</td></tr>
+    <tr><td>Set WPGraphQL CORS to Next.js domain only</td><td>⬜ Todo</td></tr>
+    <tr><td>Add revalidate webhook (functions.php code above)</td><td>⬜ Todo</td></tr>
+  </table>
+
+  <h3>Next.js / .env.local</h3>
+  <table>
+    <tr><th>Task</th><th>Status</th></tr>
+    <tr><td>Set WP_GRAPHQL_URL and WP_SITE_URL to production URLs</td><td>⬜ Todo</td></tr>
+    <tr><td>Generate and set REVALIDATE_SECRET (openssl rand -base64 32)</td><td>⬜ Todo</td></tr>
+    <tr><td>Set NEXT_PUBLIC_ADSENSE_PUB_ID (from Google AdSense dashboard)</td><td>⬜ Todo</td></tr>
+    <tr><td>Set MAILCHIMP_API_KEY, AUDIENCE_ID, SERVER_PREFIX</td><td>⬜ Todo</td></tr>
+    <tr><td>Set NEXT_PUBLIC_ONESIGNAL_APP_ID and NEXT_PUBLIC_WEBPUSHR_KEY</td><td>⬜ Todo</td></tr>
+    <tr><td>Set AKISMET_API_KEY</td><td>⬜ Todo</td></tr>
+    <tr><td>Set SITE_URL to production domain</td><td>⬜ Todo</td></tr>
+    <tr><td>Set NEXT_PUBLIC_YOAST_WPGRAPHQL=true (after plugin installed)</td><td>⬜ Todo</td></tr>
+    <tr><td>Set NEXT_PUBLIC_ACF_WPGRAPHQL=true (after plugin installed)</td><td>⬜ Todo</td></tr>
+  </table>
+
+  <h3>AdSense</h3>
+  <table>
+    <tr><th>Task</th><th>Status</th></tr>
+    <tr><td>Get Google AdSense approval for domain</td><td>⬜ Todo</td></tr>
+    <tr><td>Create ad units in AdSense dashboard (get slot IDs)</td><td>⬜ Todo</td></tr>
+    <tr><td>Add NEXT_PUBLIC_IN_ARTICLE_AD_SLOT to .env.local</td><td>⬜ Todo</td></tr>
+    <tr><td>Add LeaderboardAd to Navbar and Footer with slot IDs</td><td>⬜ Todo</td></tr>
+    <tr><td>Add StickyAd to post layout sidebar with slot ID</td><td>⬜ Todo</td></tr>
+    <tr><td>Add PopupAd to layout with slot ID</td><td>⬜ Todo</td></tr>
+  </table>
+
+  <h3>Verification Tests</h3>
+  <table>
+    <tr><th>Test</th><th>Expected Result</th></tr>
+    <tr><td>npm run dev → visit http://localhost:3000</td><td>Blog loads, posts from WordPress appear</td></tr>
+    <tr><td>Visit /post/[any-slug]</td><td>Full post renders with comments form</td></tr>
+    <tr><td>POST /api/revalidate with wrong secret</td><td>Returns 401 Unauthorized</td></tr>
+    <tr><td>POST /api/revalidate with correct secret</td><td>Returns {revalidated: true}</td></tr>
+    <tr><td>Submit a comment</td><td>Appears in WP Admin as pending</td></tr>
+    <tr><td>Subscribe to newsletter</td><td>Confirmation email arrives via Mailchimp</td></tr>
+    <tr><td>Search via /search?q=test</td><td>Returns matching posts</td></tr>
+    <tr><td>Lighthouse SEO score on post page</td><td>Score ≥ 95</td></tr>
+    <tr><td>Google Rich Results Test on post URL</td><td>BlogPosting schema detected, valid</td></tr>
+    <tr><td>npm run build</td><td>Exit code 0, sitemap generated</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════════════════════════════ 18. GIT ═══ -->
+<div class="section">
+  <h2 class="section-title">18. Git &amp; Deployment</h2>
+
+  <h3>Git Remotes</h3>
+  <table>
+    <tr><th>Remote</th><th>URL</th><th>Purpose</th></tr>
+    <tr><td><code>origin</code></td><td>https://github.com/kwekujasper/stablo-jasper.git</td><td>Your private working repo — push all changes here</td></tr>
+    <tr><td><code>fork</code></td><td>https://github.com/kwekujasper/stablo.git</td><td>Original public fork — leave untouched</td></tr>
+    <tr><td><code>upstream</code></td><td>https://github.com/web3templates/stablo.git</td><td>Original template — can pull UI updates from here</td></tr>
+  </table>
+
+  <h3>Common Commands</h3>
+  <pre><span class="comment"># Start development</span>
+npm run dev
+
+<span class="comment"># Build for production (also runs sitemap generation)</span>
+npm run build
+
+<span class="comment"># Push to GitHub</span>
+git add -A
+git commit -m "your message"
+git push origin main</pre>
+
+  <h3>Deployment (Vercel — Recommended)</h3>
+  <ol>
+    <li>Go to vercel.com → New Project → Import from GitHub → select <code>stablo-jasper</code></li>
+    <li>Add all environment variables from .env.local into Vercel's Environment Variables section</li>
+    <li>Deploy — Vercel auto-detects Next.js</li>
+    <li>Update <code>WP_GRAPHQL_URL</code>, <code>WP_SITE_URL</code>, and <code>SITE_URL</code> to your production WordPress domain</li>
+    <li>Update the revalidate webhook URL in WordPress functions.php to your Vercel domain</li>
+  </ol>
+
+  <div class="callout info">
+    <strong>ISR on Vercel</strong>
+    On-demand revalidation (<code>/api/revalidate</code>) works natively on Vercel without any extra configuration.
+    On other hosts, ensure your Next.js server stays running (not just static export).
+  </div>
+</div>
+
+<div class="footer">
+  <p>Stablo Jasper — Headless WordPress + Next.js Documentation</p>
+  <p>Private Repository: github.com/kwekujasper/stablo-jasper</p>
+  <p>To print as PDF: File → Print → Save as PDF (set margins to Minimum, enable Background Graphics)</p>
+</div>
+
+</body>
+</html>

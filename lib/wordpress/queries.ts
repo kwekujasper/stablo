@@ -226,6 +226,7 @@ export const GET_GENERAL_SETTINGS = /* GraphQL */ `
       description
       url
       language
+      logoUrl
     }
   }
 `;
