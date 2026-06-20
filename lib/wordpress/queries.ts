@@ -22,18 +22,11 @@ export const GET_ALL_POSTS = /* GraphQL */ `
   }
 `;
 
-export const GET_POST_BY_SLUG = /* GraphQL */ `
-  ${POST_FIELDS}
-  query GetPostBySlug($slug: ID!) {
-    post(id: $slug, idType: SLUG) {
-      ...PostFields
-      content(format: RENDERED)
-      status
-      acfFields {
-        isSubscriberOnly
-        adSlotsEnabled
-      }
-      seo {
+// SEO fields are only available when WPGraphQL for Yoast SEO plugin is active.
+// Set NEXT_PUBLIC_YOAST_WPGRAPHQL=true in .env.local once the plugin is installed.
+const SEO_BLOCK =
+  process.env.NEXT_PUBLIC_YOAST_WPGRAPHQL === "true"
+    ? `seo {
         title
         metaDesc
         opengraphTitle
@@ -48,7 +41,27 @@ export const GET_POST_BY_SLUG = /* GraphQL */ `
         twitterImage { sourceUrl }
         canonical
         schema { raw }
-      }
+      }`
+    : "";
+
+// ACF fields are only available when WPGraphQL for ACF plugin is active.
+const ACF_BLOCK =
+  process.env.NEXT_PUBLIC_ACF_WPGRAPHQL === "true"
+    ? `acfFields {
+        isSubscriberOnly
+        adSlotsEnabled
+      }`
+    : "";
+
+export const GET_POST_BY_SLUG = /* GraphQL */ `
+  ${POST_FIELDS}
+  query GetPostBySlug($slug: ID!) {
+    post(id: $slug, idType: SLUG) {
+      ...PostFields
+      content(format: RENDERED)
+      status
+      ${ACF_BLOCK}
+      ${SEO_BLOCK}
     }
   }
 `;
@@ -212,7 +225,6 @@ export const GET_GENERAL_SETTINGS = /* GraphQL */ `
       title
       description
       url
-      email
       language
     }
   }

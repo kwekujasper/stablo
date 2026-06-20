@@ -1,4 +1,4 @@
-import { getSettings } from "@/lib/sanity/client";
+import { getSettings } from "@/lib/wordpress/api";
 import Contact from "./contact";
 
 export default async function ContactPage() {
@@ -6,4 +6,4 @@ export default async function ContactPage() {
   return <Contact settings={settings} />;
 }
 
-// export const revalidate = 60;
+export const revalidate = 3600;

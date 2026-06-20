@@ -109,7 +109,6 @@ export interface WPGeneralSettings {
   title: string;
   description: string;
   url: string;
-  email?: string;
   language?: string;
 }
 
